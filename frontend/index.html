@@ -20,59 +20,127 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item admin" style="display: none;">
                         <a class="nav-link" href="./resident/index.html">Residents</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item admin" style="display: none;">
                         <a class="nav-link" href="./caregiver/index.html">Caregivers</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item admin" style="display: none;">
                         <a class="nav-link" href="./resident_assignments/index.html">Resident Assignments</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item admin" style="display: none;">
                         <a class="nav-link" href="./schedules/index.html">Schedules</a>
+                    </li> -->
+                </ul>
+            </div>
+            <div class="navbar-text  justify-content-end">
+                <ul>
+                    <li class="nav-item" style="display: none;" id="admin-panel">
+                        <span>Admin</span>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="caregiver-panel">
+                        <span>Caregiver</span>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="resident-panel">
+                        <span>Resident</span>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="auth-section">
+                        <a class="nav-link" href="./auth/login.html">Login</a>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="logout">
+                        <a class="nav-link" onclick="logout()" href="./auth/login.html">Logout</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container mt-5">
-        <h1 class="text-left mb-4">Dashboard</h1>
-        <table class="table table-bordered">
+    <!-- Admin Content -->
+    <div class="container mt-5 admin" style="display: none;">
+        <div class="row mb-5">
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body row">
+                        <div class="col-3">
+                            <img src="./images/friends.png" alt="" srcset="" style="width: 50px;">
+                        </div>
+                        <div class="col-9">
+                            <h1 class="card-title" id="total-residents"></h1>
+                            <h6 class="card-subtitle mb-2 text-muted">Residents</h6>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body row">
+                        <div class="col-3">
+                            <img src="./images/babysitter.png" alt="" srcset="" style="width: 50px;">
+                        </div>
+                        <div class="col-9">
+                            <h1 class="card-title" id="total-caregivers"></h1>
+                            <h6 class="card-subtitle mb-2 text-muted">Caregivers</h6>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <h5 class="text-left mb-4">Daily Shifts</h1>
+        <table class="table table-bordered" id="schedulesTable">
             <thead class="table-light">
                 <tr>
-                    <th>#</th>
-                    <th>Item Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
+                <th>Schedule ID</th>
+                <th>Resident</th>
+                <th>Caregiver</th>
+                <th>Shift Date</th>
+                <th>Shift Start</th>
+                <th>Shift End</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Caregiver Content -->
+    <div class="container mt-5 caregiver" style="display: none;">
+        <h5 class="text-left mb-4">Daily Shift</h1>
+        <table class="table table-bordered" id="cschedulesTable">
+            <thead class="table-light">
                 <tr>
-                    <td>1</td>
-                    <td>Item 1</td>
-                    <td>Sample description for item 1</td>
-                    <td>$10</td>
+                <th>Schedule ID</th>
+                <th>Resident</th>
+                <th>Caregiver</th>
+                <th>Shift Date</th>
+                <th>Shift Start</th>
+                <th>Shift End</th>
                 </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    <!-- Resident Content -->
+    <div class="container mt-5 resident" style="display: none;">
+        <h5 class="text-left mb-4">Your Care Shift</h1>
+        <table class="table table-bordered" id="rschedulesTable">
+            <thead class="table-light">
                 <tr>
-                    <td>2</td>
-                    <td>Item 2</td>
-                    <td>Sample description for item 2</td>
-                    <td>$20</td>
+                <th>Schedule ID</th>
+                <th>Resident</th>
+                <th>Caregiver</th>
+                <th>Shift Date</th>
+                <th>Shift Start</th>
+                <th>Shift End</th>
                 </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Item 3</td>
-                    <td>Sample description for item 3</td>
-                    <td>$30</td>
-                </tr>
-            </tbody>
+            </thead>
+            <tbody></tbody>
         </table>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./app.js"></script>
+
 </body>
 </html>

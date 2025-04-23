@@ -1,3 +1,5 @@
+var token = localStorage.getItem("access_token");
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#create-caregiver-form');
 
@@ -13,13 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
           salary: form.salary.value,
       };
 
-      console.log(formData);
       try {
           const response = await fetch('http://127.0.0.1:5000/caregivers', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
+                  "Authorization": `Bearer ${token}`
               },
+
               body: JSON.stringify(formData),
           });
 
@@ -33,14 +36,22 @@ document.addEventListener('DOMContentLoaded', () => {
           }
       } catch (err) {
           console.error('Error:', err);
-          alert('An error occurred while creating the caregiver.');
+          alert(err.message || 'An error occurred while creating the caregiver.');
       }
   });
 });
 
 const apiUrl = 'http://127.0.0.1:5000/caregivers'; // Change this to your Flask endpoint
 
-  fetch(apiUrl)
+  // const token = localStorage.getItem("access_token");
+
+  fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization": `Bearer ${token}`
+    }
+  })
     .then(response => {
       if (!response.ok) {
         throw new Error('Failed to fetch data');

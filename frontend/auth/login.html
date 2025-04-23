@@ -1,15 +1,15 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Residents</title>
+    <title>Add Resident</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ml-auto">
         <div class="container-fluid">
             <a class="navbar-brand text-bold" href="#">SHC</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,16 +17,16 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item" data-role="admin">
+                    <li class="nav-item admin" data-role="admin" style="display: none;">
                         <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
                     </li>
-                    <li class="nav-item" data-role="admin">
-                        <a class="nav-link" href="">Residents</a>
+                    <li class="nav-item admin" data-role="admin" style="display: none;">
+                        <a class="nav-link" href="./index.html">Residents</a>
                     </li>
-                    <li class="nav-item" data-role="admin">
-                        <a class="nav-link" href="../caregiver/index.html">Caregivers</a>
+                    <li class="nav-item admin" data-role="admin" style="display: none;">
+                        <a class="nav-link" href="./index.html">Caregivers</a>
                     </li>
-                    <li class="nav-item" data-role="admin">
+                    <li class="nav-item admin" data-role="admin" style="display: none;">
                         <a class="nav-link" href="../resident_assignments/index.html">Resident Assignments</a>
                     </li>
                     <!-- <li class="nav-item" data-role="admin">
@@ -44,38 +44,37 @@
                 <li class="nav-item" style="display: none;" id="resident-panel">
                     <span>Resident</span>
                 </li>
-                <li class="nav-item" style="display: none;" id="logout">
-                    <a class="nav-link" onclick="logout()" href="./auth/login.html">Logout</a>
-                </li>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <div class="container mt-5">
-        <h1 class="text-left mb-4">Residents</h1>
-        <a class="btn btn-dark mb-3" href="./create_resident.html" role="button">Add Resident</a>
-
-        <table class="table table-bordered" id="residentsTable">
-            <thead class="table-light">
-                <tr>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Admission Date</th>
-                    <th>Emergency Contact Name</th>
-                    <th>Emergency Contact Phone</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col-3 mb-4">
+            </div>
+            <div class="col-6 mb-4" style="margin-top: 20vh;">
+                <h1 class="text-left mb-4">Login</h1>
+                <form id="loginForm">
+                    <div class="form-group mb-3">
+                      <label for="exampleInputEmail1">User ID</label>
+                      <input type="user_id" class="form-control" id="user_id" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="form-group mb-3">
+                      <label for="exampleInputPassword1">Password</label>
+                      <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+            </div>
+            <div class="col-3 mb-4"></div>
+        </div>
     </div>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="./resident.js"></script>
+    <script src="./auth.js"></script>
     <script src="../app.js"></script>
 
 </body>

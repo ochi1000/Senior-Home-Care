@@ -16,7 +16,7 @@ CREATE TABLE residents (
     emergency_contact_phone NVARCHAR(15),
     admission_date DATE DEFAULT GETDATE(),
     discharge_date DATE DEFAULT NULL,
-    resident_status NVARCHAR(10) DEFAULT 'Active',
+    resident_status NVARCHAR(10) DEFAULT 'Active' CHECK (resident_status IN ('Active', 'Inactive', 'Deceased')),
     PRIMARY KEY (first_name, date_of_birth)
 );
 GO
@@ -38,7 +38,7 @@ GO
 CREATE TABLE users (
     user_id INT IDENTITY(1,1) PRIMARY KEY,
     username NVARCHAR(100) UNIQUE NOT NULL,
-    password_hash varbinary(MAX) NOT NULL,
+    password_hash NVARCHAR(255) NOT NULL,
     role NVARCHAR(50) NOT NULL CHECK (role IN ('admin', 'caregiver', 'resident')),
     caregiver_phone_number NVARCHAR(12),
     resident_first_name NVARCHAR(100),
@@ -53,7 +53,7 @@ CREATE TABLE resident_caregivers (
     resident_first_name NVARCHAR(100),
     resident_date_of_birth DATE,
     caregiver_phone_number NVARCHAR(12),
-    assignment_status NVARCHAR(20) DEFAULT 'Active',
+    assignment_status NVARCHAR(20) DEFAULT 'Active' CHECK (assignment_status IN ('Active', 'Completed')),
     assignment_end_date DATE,
     FOREIGN KEY (resident_first_name, resident_date_of_birth) REFERENCES residents(first_name, date_of_birth) ON DELETE CASCADE,
     FOREIGN KEY (caregiver_phone_number) REFERENCES caregivers(phone_number) ON DELETE CASCADE
@@ -76,64 +76,6 @@ CREATE TABLE schedules (
     FOREIGN KEY (resident_first_name, resident_date_of_birth) REFERENCES residents(first_name, date_of_birth) ON DELETE SET NULL
 );
 GO
-
-CREATE PROCEDURE GetResidentDetails
-    @first_name NVARCHAR(100),
-    @date_of_birth DATE
-AS
-BEGIN
-    SELECT * FROM residents
-    WHERE first_name = @first_name
-      AND date_of_birth = @date_of_birth;
-END
-
-CREATE PROCEDURE AddResident
-    @first_name NVARCHAR(100),
-    @last_name NVARCHAR(100),
-    @date_of_birth DATE,
-    @gender CHAR(1),
-    @phone_number NVARCHAR(15) = NULL,
-    @address NVARCHAR(MAX) = NULL,
-    @emergency_contact_name NVARCHAR(100) = NULL,
-    @emergency_contact_phone NVARCHAR(15) = NULL
-AS
-BEGIN
-    INSERT INTO residents (
-        first_name, last_name, date_of_birth, gender,
-        phone_number, address, emergency_contact_name, emergency_contact_phone
-    )
-    VALUES (
-        @first_name, @last_name, @date_of_birth, @gender,
-        @phone_number, @address, @emergency_contact_name, @emergency_contact_phone
-    );
-END
-
-CREATE PROCEDURE UpdateResident
-    @first_name NVARCHAR(100),
-    @last_name NVARCHAR(100),
-    @date_of_birth DATE,
-    @gender CHAR(1) = NULL,
-    @phone_number NVARCHAR(15) = NULL,
-    @address NVARCHAR(MAX) = NULL,
-    @emergency_contact_name NVARCHAR(100) = NULL,
-    @emergency_contact_phone NVARCHAR(15) = NULL,
-    @admission_date DATE = NULL,
-    @status NVARCHAR(10) = 'Active'
-AS
-BEGIN
-    UPDATE residents
-    SET 
-        gender = @gender,
-        phone_number = @phone_number,
-        address = @address,
-        emergency_contact_name = @emergency_contact_name,
-        emergency_contact_phone = @emergency_contact_phone,
-        admission_date = @admission_date,
-        status = @status
-    WHERE first_name = @first_name AND date_of_birth = @date_of_birth;
-END
-
-
 
 -- Create Procedure to generate daily schedules
 CREATE PROCEDURE GenerateDailySchedules
@@ -162,56 +104,3 @@ END;
 GO
 
 EXEC GenerateDailySchedules;
-
--- -- Create trigger to prevent conflicting assignments
-CREATE TRIGGER trg_prevent_conflicting_assignments
-ON resident_caregivers
-INSTEAD OF INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    -- Check for conflicting assignments
-    IF EXISTS (
-        SELECT 1
-        FROM inserted i
-        JOIN resident_caregivers rc
-            ON rc.resident_first_name = i.resident_first_name
-            AND rc.resident_date_of_birth = i.resident_date_of_birth
-            AND rc.assignment_status != 'Completed'
-    )
-    BEGIN
-        RAISERROR('Resident already has an active caregiver assignment.', 16, 1);
-        RETURN;
-    END
-
-    -- No conflict, perform the insert
-    INSERT INTO resident_caregivers (
-        resident_first_name,
-        resident_date_of_birth,
-        caregiver_phone_number,
-        assignment_status,
-        assignment_end_date
-    )
-    SELECT 
-        resident_first_name,
-        resident_date_of_birth,
-        caregiver_phone_number,
-        assignment_status,
-        assignment_end_date
-    FROM inserted;
-END;
-
-CREATE PROCEDURE GetTotalResidents
-AS
-BEGIN
-    SELECT COUNT(*) AS total_residents FROM residents;
-END;
-GO
-
-CREATE PROCEDURE GetTotalCaregivers
-AS
-BEGIN
-    SELECT COUNT(*) AS total_caregivers FROM caregivers;
-END;
-GO

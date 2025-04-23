@@ -1,3 +1,5 @@
+var token = localStorage.getItem("access_token");
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('#create-resident-form');
 
@@ -15,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
             emergency_contact_phone: form.em_contact_phone.value,
         };
 
-        console.log(formData);
         try {
             const response = await fetch('http://127.0.0.1:5000/residents', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
@@ -42,7 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const apiUrl = 'http://127.0.0.1:5000/residents'; // Change this to your Flask endpoint
 
-    fetch(apiUrl)
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data');
@@ -77,3 +85,4 @@ const apiUrl = 'http://127.0.0.1:5000/residents'; // Change this to your Flask e
       .catch(error => {
         console.error('Error fetching residents:', error);
       });
+    

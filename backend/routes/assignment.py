@@ -2,10 +2,14 @@ from flask import Blueprint, request, jsonify
 from config.db import get_db_connection
 from datetime import datetime
 import sys
+from flask_jwt_extended import jwt_required
+from routes.auth import role
 
 assignments_bp = Blueprint('assignments', __name__)
 
 @assignments_bp.route('/assignments', methods=['GET'])
+@jwt_required()
+@role('admin')
 def get_assignments():
     """Retrieve all resident-caregiver assignments with resident and caregiver details."""
     conn = get_db_connection()
@@ -38,17 +42,18 @@ def get_assignments():
     conn.close()
     return jsonify(assignments)
 
-
-@assignments_bp.route('/assignments/<resident_first_name>/<resident_last_name>/<resident_date_of_birth>/<caregiver_first_name>/<caregiver_last_name>/<caregiver_hire_date>', methods=['GET'])
-def get_assignment(resident_first_name, resident_last_name, resident_date_of_birth, caregiver_first_name, caregiver_last_name, caregiver_hire_date):
+@assignments_bp.route('/assignments/<resident_first_name>/<resident_date_of_birth>/<caregiver_phone_number>', methods=['GET'])
+@jwt_required()
+@role(['admin', 'caregiver', 'resident'])
+def get_assignment(resident_first_name, resident_date_of_birth, caregiver_phone_number):
     """Retrieve a specific resident-caregiver assignment."""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
         SELECT * FROM resident_caregivers
-        WHERE resident_first_name = ? AND resident_last_name = ? AND resident_date_of_birth = ?
-        AND caregiver_first_name = ? AND caregiver_last_name = ? AND caregiver_hire_date = ?
-    """, (resident_first_name, resident_last_name, resident_date_of_birth, caregiver_first_name, caregiver_last_name, caregiver_hire_date))
+        WHERE resident_first_name = ? AND resident_date_of_birth = ?
+        AND caregiver_phone_number = ?
+    """, (resident_first_name, resident_date_of_birth, caregiver_phone_number))
     row = cursor.fetchone()
     conn.close()
 
@@ -58,6 +63,8 @@ def get_assignment(resident_first_name, resident_last_name, resident_date_of_bir
     return jsonify({'message': 'Assignment not found'}), 404
 
 @assignments_bp.route('/assignments', methods=['POST'])
+@jwt_required()
+@role('admin')
 def add_assignment():
     """Create a new resident-caregiver assignment."""
     data = request.json
@@ -72,7 +79,9 @@ def add_assignment():
     conn.close()
     return jsonify({'message': 'Assignment added successfully'}), 201
 
-@assignments_bp.route('/assignments/<resident_first_name>/<resident_last_name>/<resident_date_of_birth>/<caregiver_first_name>/<caregiver_last_name>/<caregiver_hire_date>', methods=['DELETE'])
+@assignments_bp.route('/assignments/<resident_first_name>/<resident_date_of_birth>/<caregiver_phone_number>', methods=['DELETE'])
+@jwt_required()
+@role('admin')
 def delete_assignment(resident_first_name, resident_last_name, resident_date_of_birth, caregiver_first_name, caregiver_last_name, caregiver_hire_date):
     """Delete a resident-caregiver assignment."""
     conn = get_db_connection()

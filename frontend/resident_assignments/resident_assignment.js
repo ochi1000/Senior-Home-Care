@@ -1,7 +1,14 @@
+var token = localStorage.getItem("access_token");
 
 const tableBody = document.querySelector("#assignmentTable tbody");
 
-fetch('http://localhost:5000/assignments')
+fetch('http://localhost:5000/assignments', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization": `Bearer ${token}`
+    }
+  })
   .then(response => {
     if (!response.ok) {
       throw new Error('Failed to fetch assignments');
@@ -41,7 +48,13 @@ const residentSelect = document.getElementById('residentSelect');
     const caregiverSelect = document.getElementById('caregiverSelect');
 
     // Fetch Residents
-    fetch('http://localhost:5000/residents')
+    fetch('http://localhost:5000/residents', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then(res => res.json())
       .then(data => {
         // console.log(data);
@@ -54,7 +67,13 @@ const residentSelect = document.getElementById('residentSelect');
       });
 
     // Fetch Caregivers
-    fetch('http://localhost:5000/caregivers')
+    fetch('http://localhost:5000/caregivers', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then(res => res.json())
       .then(data => {
         data.forEach(cg => {
@@ -74,14 +93,15 @@ const residentSelect = document.getElementById('residentSelect');
 
       const assignment = {
         resident_first_name: rFirst,
-        resident_date_of_birth: "1998-12-12", // Placeholder, replace with actual DOB
+        resident_date_of_birth: rDob, // Placeholder, replace with actual DOB
         caregiver_phone_number: cPhone,
       };
 
       fetch('http://localhost:5000/assignments', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(assignment)
       })
@@ -94,3 +114,4 @@ const residentSelect = document.getElementById('residentSelect');
         alert("Something went wrong.");
       });
     });
+  
